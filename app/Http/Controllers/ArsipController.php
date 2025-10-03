@@ -32,28 +32,28 @@ class ArsipController extends Controller
 
     // Simpan arsip baru
     public function store(Request $request)
-{
-    $request->validate([
-        'nomor_surat' => 'required|string|max:255',
-        'kategori_id' => 'required|exists:kategori,id',
-        'judul'       => 'required|string|max:255',
-        'file'        => 'required|mimes:pdf|max:2048'
-    ]);
+    {
+        $request->validate([
+            'nomor_surat' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategori,id',
+            'judul' => 'required|string|max:255',
+            'file' => 'required|mimes:pdf|max:2048'
+        ]);
 
-    $lokasiFile = $request->file('file')->store('arsip', 'public');
-
-
-    Arsip::create([
-    'nomor_surat' => $request->nomor_surat,
-    'kategori_id' => $request->kategori_id,
-    'judul'       => $request->judul,
-    'lokasi_file' => $lokasiFile
-]);
+        $lokasiFile = $request->file('file')->store('arsip', 'public');
 
 
+        Arsip::create([
+            'nomor_surat' => $request->nomor_surat,
+            'kategori_id' => $request->kategori_id,
+            'judul' => $request->judul,
+            'lokasi_file' => $lokasiFile
+        ]);
 
-    return redirect()->route('arsip.index')->with('sukses', 'Data berhasil disimpan!');
-}
+
+
+        return redirect()->route('arsip.index')->with('sukses', 'Data berhasil disimpan!');
+    }
 
 
     // Lihat detail arsip
@@ -66,33 +66,33 @@ class ArsipController extends Controller
     public function edit(Arsip $arsip)
     {
         $kategori = Kategori::all();
-        return view('arsip.edit', compact('arsip','kategori'));
+        return view('arsip.edit', compact('arsip', 'kategori'));
     }
 
     // Update arsip
     public function update(Request $request, Arsip $arsip)
     {
         $request->validate([
-        'nomor_surat' => 'required|string|max:255',
-        'kategori_id' => 'required|exists:kategori,id',
-        'judul'       => 'required|string|max:255',
-        'file'        => 'nullable|mimes:pdf|max:2048'
-    ]);
+            'nomor_surat' => 'required|string|max:255',
+            'kategori_id' => 'required|exists:kategori,id',
+            'judul' => 'required|string|max:255',
+            'file' => 'nullable|mimes:pdf|max:2048'
+        ]);
 
-    $arsip->nomor_surat = $request->nomor_surat;
-    $arsip->kategori_id = $request->kategori_id;
-    $arsip->judul       = $request->judul;
+        $arsip->nomor_surat = $request->nomor_surat;
+        $arsip->kategori_id = $request->kategori_id;
+        $arsip->judul = $request->judul;
 
-    if ($request->hasFile('file')) {
-        if ($arsip->lokasi_file && Storage::disk('public')->exists($arsip->lokasi_file)) {
-            Storage::disk('public')->delete($arsip->lokasi_file);
+        if ($request->hasFile('file')) {
+            if ($arsip->lokasi_file && Storage::disk('public')->exists($arsip->lokasi_file)) {
+                Storage::disk('public')->delete($arsip->lokasi_file);
+            }
+            $arsip->lokasi_file = $request->file('file')->store('arsip', 'public');
         }
-        $arsip->lokasi_file = $request->file('file')->store('arsip', 'public');
-    }
 
-    $arsip->save();
+        $arsip->save();
 
-    return redirect()->route('arsip.index')->with('sukses', 'Data berhasil diperbarui!');
+        return redirect()->route('arsip.index')->with('sukses', 'Data berhasil diperbarui!');
 
     }
 
@@ -100,8 +100,8 @@ class ArsipController extends Controller
     public function destroy(Arsip $arsip)
     {
         if ($arsip->lokasi_file && Storage::disk('public')->exists($arsip->lokasi_file)) {
-    Storage::disk('public')->delete($arsip->lokasi_file);
-}
+            Storage::disk('public')->delete($arsip->lokasi_file);
+        }
         $arsip->delete();
 
         return redirect()->route('arsip.index')->with('sukses', 'Data berhasil dihapus!');
@@ -109,7 +109,7 @@ class ArsipController extends Controller
 
     // Unduh arsip PDF
     public function unduh(Arsip $arsip)
-{
-    return Storage::disk('public')->download($arsip->lokasi_file, $arsip->judul.'.pdf');
-}
+    {
+        return Storage::disk('public')->download($arsip->lokasi_file, $arsip->judul . '.pdf');
+    }
 }
