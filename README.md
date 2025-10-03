@@ -32,7 +32,7 @@ Aplikasi ini memudahkan pengelolaan dokumen dan surat di instansi atau organisas
 
 ---
 
-## 🛠 Instalasi
+## Instalasi
 
 1. Clone repository:
 git clone https://github.com/MuhammadRisalMaulana/Aplikasi-ArsipSurat.git
