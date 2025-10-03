@@ -1,11 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ArsipController;
-use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\HalamanController;
-use App\Http\Controllers\AboutController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -18,28 +14,26 @@ use App\Http\Controllers\AboutController;
 |
 */
 
-// Beranda menampilkan daftar arsip
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
-Route::get('/', [ArsipController::class, 'index']);
 
-Route::resource('arsip', ArsipController::class);
-Route::get('arsip/{arsip}/unduh', [ArsipController::class, 'unduh'])->name('arsip.unduh');
+Route::middleware(['auth'])->group(function () {
+    // dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-// Resource untuk arsip (kecuali index karena sudah di root)
-Route::get('arsip/create', [ArsipController::class,'create'])->name('arsip.create');
-Route::post('arsip', [ArsipController::class,'store'])->name('arsip.store');
-Route::get('arsip/{arsip}', [ArsipController::class,'show'])->name('arsip.show');
-Route::get('arsip/{arsip}/edit', [ArsipController::class,'edit'])->name('arsip.edit');
-Route::put('arsip/{arsip}', [ArsipController::class,'update'])->name('arsip.update');
-Route::delete('arsip/{arsip}', [ArsipController::class,'destroy'])->name('arsip.destroy');
-Route::get('arsip/{arsip}/unduh', [ArsipController::class,'unduh'])->name('arsip.unduh');
+    // Arsip
+    Route::resource('arsip', ArsipController::class);
+    Route::get('arsip/{arsip}/unduh', [ArsipController::class, 'unduh'])->name('arsip.unduh');
 
-// CRUD kategori
-Route::resource('kategori', KategoriController::class)->except(['show']);
+    // Kategori
+    Route::resource('kategori', KategoriController::class)->except(['show']);
 
-// About
-Route::get('/about', [AboutController::class, 'index'])->name('about');
+    // About
+    Route::get('/about', [AboutController::class, 'index'])->name('about');
+});
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+require __DIR__.'/auth.php';
