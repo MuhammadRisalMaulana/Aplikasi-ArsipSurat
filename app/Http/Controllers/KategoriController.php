@@ -7,10 +7,24 @@ use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = Kategori::orderBy('nama')->paginate(10);
-        return view('kategori.index', compact('kategori'));
+ // Ambil kata kunci pencarian
+        $cari = $request->query('q');
+
+        // Query kategori
+        $kategoriQuery = Kategori::query();
+
+        if ($cari) {
+            $kategoriQuery->where('nama', 'like', "%{$cari}%")
+                          ->orWhere('keterangan', 'like', "%{$cari}%");
+        }
+
+        // Pagination
+        $kategori = $kategoriQuery->orderBy('nama')->paginate(10);
+        $kategori->appends(['q' => $cari]); // agar query tetap ada di pagination
+
+        return view('kategori.index', compact('kategori', 'cari'));
     }
 
     public function create()

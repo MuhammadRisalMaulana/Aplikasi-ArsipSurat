@@ -9,11 +9,11 @@ class HalamanController extends Controller
     public function index()
     {
         $data = [
-            'nama'    => 'Yoppy Yunhasnawa',
-            'prodi'   => 'D3-MI PSDKU Kediri',
-            'nim'     => '7411040713',
-            'tanggal' => '24 Oktober 2023',
-            'foto'    => asset('images/foto-profil.png')
+            'nama'    => 'Muhammad Risal Maulana',
+            'prodi'   => 'D3-MI PSDKU Pamekasan',
+            'nim'     => '2231750003',
+            'tanggal' => '03 Oktober 2025',
+            'foto'    => asset('images/fotoprofil.png')
         ];
 
         return view('about', compact('data'));
